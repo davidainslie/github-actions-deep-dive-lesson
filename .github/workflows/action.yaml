@@ -130,17 +130,9 @@ jobs:
 
       - name: Delete lambda function
         run: |
-          aws lambda list-functions --region us-east-1 | jq -r '.Functions | .[] | .FunctionName' |
-          while read uname1; do
-          echo "Deleting $uname1";
-          aws lambda delete-function --region us-east-1 --function-name $uname1;
-          done
-          
-#         aws lambda get-function --function-name my-function
-#         aws lambda delete-function --function-name my-function
+          aws lambda delete-function --function-name my-function || true
 
       - name: Create lambda function
-        if: ${{always()}}
         run: |
           aws lambda create-function --function-name my-function \
             --code S3Bucket=${{env.BUCKET}},S3Key=${{github.sha}}.zip \
