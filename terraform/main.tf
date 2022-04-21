@@ -3,6 +3,7 @@
 
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket
+  force_destroy = true
 }
 
 data "aws_iam_policy" "s3-full-access-policy" {
