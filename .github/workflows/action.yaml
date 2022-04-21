@@ -87,7 +87,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Upload to S3
-        run: aws s3 cp ${{github.sha}}.zip s3://$BUCKET/${{github.sha}}.zip
+        run: aws s3 cp ${{github.sha}}.zip s3://${{env.BUCKET}}/${{github.sha}}.zip
 
   test:
     runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
       - name: Create test function
         run: |
           aws lambda create-function --function-name test-function \
-            --code S3Bucket=$BUCKET,S3Key=${{github.sha}}.zip \
+            --code S3Bucket=${{env.BUCKET}},S3Key=${{github.sha}}.zip \
             --handler lambda_function.lambda_handler \
             --runtime python3.8 \
             --role arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/my-lambda-role
@@ -133,7 +133,7 @@ jobs:
       #   run: |
       #     aws lambda update-function-code \
       #       --function-name my-function \
-      #       --s3-bucket $BUCKET \
+      #       --s3-bucket ${{env.BUCKET}} \
       #       --s3-key ${{github.sha}}.zip \
       #       --publish
       - name: Deploy lambda function
@@ -143,5 +143,5 @@ jobs:
           aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws_region: us-east-1 # ${{secrets.AWS_REGION}}
           function_name: my-function
-          s3_bucket: $BUCKET
+          s3_bucket: ${{env.BUCKET}}
           s3_key: ${{github.sha}}.zip
