@@ -129,6 +129,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Delete lambda function
+#       continue-on-error: true <--- Could do this instead of the "|| true" on the following command
         run: |
           aws lambda delete-function --function-name my-function || true
 
@@ -140,10 +141,10 @@ jobs:
             --runtime python3.8 \
             --role arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/my-lambda-role
 
-#      - name: Update function code
-#        run: |
-#          aws lambda update-function-code \
-#            --function-name my-function \
-#            --s3-bucket ${{env.BUCKET}} \
-#            --s3-key ${{github.sha}}.zip \
-#            --publish
+#     - name: Update function code
+#       run: |
+#         aws lambda update-function-code \
+#           --function-name my-function \
+#           --s3-bucket ${{env.BUCKET}} \
+#           --s3-key ${{github.sha}}.zip \
+#           --publish
