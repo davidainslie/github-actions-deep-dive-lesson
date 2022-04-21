@@ -133,6 +133,7 @@ jobs:
           aws lambda delete-function --function-name my-function
 
       - name: Create lambda function
+        if: ${{always()}}
         run: |
           aws lambda create-function --function-name my-function \
             --code S3Bucket=${{env.BUCKET}},S3Key=${{github.sha}}.zip \
