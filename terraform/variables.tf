@@ -1,3 +1,8 @@
+variable "account-id" {
+  type      = string
+  sensitive = true
+}
+
 variable "access-key" {
   type      = string
   sensitive = true
