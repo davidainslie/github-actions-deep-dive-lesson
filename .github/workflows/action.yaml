@@ -128,20 +128,22 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws-region: us-east-1
 
-      # We could do the following, but what we need is to "update" unless new and so "create" - There's an action for this.
-      # - name: Update function code
-      #   run: |
-      #     aws lambda update-function-code \
-      #       --function-name my-function \
-      #       --s3-bucket ${{env.BUCKET}} \
-      #       --s3-key ${{github.sha}}.zip \
-      #       --publish
-      - name: Deploy lambda function
-        uses: appleboy/lambda-action@master
-        with:
-          aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_region: "us-east-1" # ${{secrets.AWS_REGION}}
-          function_name: "my-function"
-          s3_bucket: ${{env.BUCKET}}
-          s3_key: ${{github.sha}}.zip
+      - name: Delete lambda function
+        run: |
+          aws lambda delete-function --function-name my-function
+
+      - name: Create lambda function
+        run: |
+          aws lambda create-function --function-name my-function \
+            --code S3Bucket=${{env.BUCKET}},S3Key=${{github.sha}}.zip \
+            --handler lambda_function.lambda_handler \
+            --runtime python3.8 \
+            --role arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/my-lambda-role
+
+#      - name: Update function code
+#        run: |
+#          aws lambda update-function-code \
+#            --function-name my-function \
+#            --s3-bucket ${{env.BUCKET}} \
+#            --s3-key ${{github.sha}}.zip \
+#            --publish
