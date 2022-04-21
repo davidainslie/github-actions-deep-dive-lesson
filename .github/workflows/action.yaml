@@ -137,10 +137,11 @@ jobs:
       #       --s3-key ${{github.sha}}.zip \
       #       --publish
       - name: Deploy lambda function
-        uses: audienceproject/publish-lambda-function
+        uses: appleboy/lambda-action@master
         with:
-          function-name: my-function
-          handler: lambda_function.lambda_handler
-          aws-account-id: ${{secrets.AWS_ACCOUNT_ID}}
-          lambda-role: my-lambda-role
-          s3-artefact: s3://${{env.BUCKET}}/${{github.sha}}.zip
+          aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_region: "us-east-1" # ${{secrets.AWS_REGION}}
+          function_name: "my-function"
+          s3_bucket: ${{env.BUCKET}}
+          s3_key: ${{github.sha}}.zip
